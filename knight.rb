@@ -3,10 +3,20 @@ class Knight
 
   KNIGHT_MOVES = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]].freeze
 
-  def initialize
+  # @queue and @visited_squares are initialized inside #knigth_moves
+  def knight_moves(start, target)
     @queue = []
     @visited_squares = []
+
+    shortest_path = build_path(start, target)
+
+    puts "\nYou made it in #{shortest_path.length - 1} moves!  Here's your shortest path:"
+    (0...shortest_path.length).each do |i|
+      p shortest_path[i]
+    end
   end
+
+  private
 
   def build_path(start, target)
     @queue << [start]
@@ -20,12 +30,13 @@ class Knight
 
       valid_moves = generate_valid_moves(current_path.last)
 
+      # each move contains the coordinates of newly visited squares
       valid_moves.each do |move|
         next if @visited_squares.include?(move)
 
         @visited_squares << move
 
-        # concatenate current_path with an array that contains move, the new visited square
+        # concatenate current_path with nested move, add new path array to queue
         @queue << (current_path + [move])
       end
     end
@@ -41,21 +52,6 @@ class Knight
 
   def valid_move?(position)
     x, y = position
-    (x >= 0 && x <= 7) && (y >= 0 && y <= 7)
-  end
-
-  def knight_moves(start, target)
-    @queue = []
-    @visited_squares = []
-
-    shortest_path = build_path(start, target)
-
-    puts "\nYou made it in #{shortest_path.length - 1} moves!  Here's your shortest path:"
-    (0...shortest_path.length).each do |i|
-      p shortest_path[i]
-    end
+    x.between?(0, 7) && y.between?(0, 7)
   end
 end
-
-# test = Knight.new
-# p test.generate_valid_moves([3, 3])
